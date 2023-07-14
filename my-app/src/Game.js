@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './Game.css';
 
 const Game = () => {
   const [xhod, setXhod] = useState(true);
   const [xh, setXh] = useState([]);
   const [oh, setOh] = useState([]);
-  const [winner, setWinner] = useState(null);
+  const [win2, setWinner] = useState(null);
+  const [draw, setDraw] = useState(false);
 
   const win = [
     ['2', '5', '8'],
@@ -23,7 +24,7 @@ const Game = () => {
     const iCell = cell.classList.contains('grid');
     const disabled = cell.classList.contains('disabled');
 
-    if (iCell && !disabled && !winner) {
+    if (iCell && !disabled && !win2) {
       const cellValue = cell.dataset.value;
 
       if (xhod) {
@@ -49,6 +50,10 @@ const Game = () => {
     return false;
   };
 
+  const checkDraw = () => {
+    return xh.length + oh.length === 9 && !checkWin(xh) && !checkWin(oh);
+  };
+
   const handleRestart = () => {
     document.querySelectorAll('.grid').forEach((cell) => {
       cell.classList.remove('disabled', 'x', 'o');
@@ -58,15 +63,18 @@ const Game = () => {
     setXh([]);
     setOh([]);
     setWinner(null);
+    setDraw(false);
   };
-  
+
   React.useEffect(() => {
     if (checkWin(xh)) {
       setWinner('X');
     } else if (checkWin(oh)) {
       setWinner('O');
+    } else if (checkDraw()) {
+      setDraw(true);
     }
-  }, [xh, oh]);
+  }, [xh, oh, checkDraw, checkWin]);  
 
   return (
     <div>
@@ -82,9 +90,18 @@ const Game = () => {
         <div className="grid" data-value="8" onClick={handleClick}></div>
       </div>
 
-      {winner && (
+      {win2 && (
         <div className="message">
-          {winner === 'X' ? 'X Wins!' : 'O Wins!'}
+          {win2 === 'X' ? 'X Won!' : 'O Won!'}
+          <button className="restart" onClick={handleRestart}>
+            Restart
+          </button>
+        </div>
+      )}
+
+      {draw && (
+        <div className="message">
+          Its a draw!
           <button className="restart" onClick={handleRestart}>
             Restart
           </button>
