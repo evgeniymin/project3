@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import './Game.css';
 
 const Game = () => {
@@ -19,23 +19,13 @@ const Game = () => {
     ['1', '4', '7'],
   ];
 
-  const handleClick = (event) => {
-    const cell = event.target;
-    const iCell = cell.classList.contains('grid');
-    const disabled = cell.classList.contains('disabled');
-
-    if (iCell && !disabled && !win2) {
-      const cellValue = cell.dataset.value;
-
+  const handleClick = (cellValue) => {
+    if (!win2 && !xh.includes(cellValue) && !oh.includes(cellValue)) {
       if (xhod) {
         setXh([...xh, cellValue]);
       } else {
         setOh([...oh, cellValue]);
       }
-
-      cell.classList.add('disabled');
-      cell.classList.add(xhod ? 'x' : 'o');
-
       setXhod(!xhod);
     }
   };
@@ -54,19 +44,8 @@ const Game = () => {
     return xh.length + oh.length === 9 && !checkWin(xh) && !checkWin(oh);
   };
 
-  const handleRestart = () => {
-    document.querySelectorAll('.grid').forEach((cell) => {
-      cell.classList.remove('disabled', 'x', 'o');
-    });
-
-    setXhod(true);
-    setXh([]);
-    setOh([]);
-    setWinner(null);
-    setDraw(false);
-  };
-
-  React.useEffect(() => {
+  
+  useEffect(() => {
     if (checkWin(xh)) {
       setWinner('X');
     } else if (checkWin(oh)) {
@@ -74,20 +53,28 @@ const Game = () => {
     } else if (checkDraw()) {
       setDraw(true);
     }
-  }, [xh, oh, checkDraw, checkWin]);  
+  }, [xh, oh, checkDraw, checkWin]);
+
+  const handleRestart = () => {
+    setXhod(true);
+    setXh([]);
+    setOh([]);
+    setWinner(null);
+    setDraw(false);
+  };
 
   return (
     <div>
       <div id="game">
-        <div className="grid" data-value="0" onClick={handleClick}></div>
-        <div className="grid" data-value="1" onClick={handleClick}></div>
-        <div className="grid" data-value="2" onClick={handleClick}></div>
-        <div className="grid" data-value="3" onClick={handleClick}></div>
-        <div className="grid" data-value="4" onClick={handleClick}></div>
-        <div className="grid" data-value="5" onClick={handleClick}></div>
-        <div className="grid" data-value="6" onClick={handleClick}></div>
-        <div className="grid" data-value="7" onClick={handleClick}></div>
-        <div className="grid" data-value="8" onClick={handleClick}></div>
+        <div className={`grid ${xh.includes('0') ? 'x' : oh.includes('0') ? 'o': ''}`} data-value="0" onClick={() => handleClick('0')}></div>
+        <div className={`grid ${xh.includes('1') ? 'x' : oh.includes('1') ? 'o': ''}`} data-value="1" onClick={() => handleClick('1')}></div>
+        <div className={`grid ${xh.includes('2') ? 'x' : oh.includes('2') ? 'o': ''}`} data-value="2" onClick={() => handleClick('2')}></div>
+        <div className={`grid ${xh.includes('3') ? 'x' : oh.includes('3') ? 'o': ''}`} data-value="3" onClick={() => handleClick('3')}></div>
+        <div className={`grid ${xh.includes('4') ? 'x' : oh.includes('4') ? 'o': ''}`} data-value="4" onClick={() => handleClick('4')}></div>
+        <div className={`grid ${xh.includes('5') ? 'x' : oh.includes('5') ? 'o': ''}`} data-value="5" onClick={() => handleClick('5')}></div>
+        <div className={`grid ${xh.includes('6') ? 'x' : oh.includes('6') ? 'o': ''}`} data-value="6" onClick={() => handleClick('6')}></div>
+        <div className={`grid ${xh.includes('7') ? 'x' : oh.includes('7') ? 'o': ''}`} data-value="7" onClick={() => handleClick('7')}></div>
+        <div className={`grid ${xh.includes('8') ? 'x' : oh.includes('8') ? 'o': ''}`} data-value="8" onClick={() => handleClick('8')}></div>
       </div>
 
       {win2 && (
